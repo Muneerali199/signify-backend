@@ -1,0 +1,15 @@
+Are you Free Today,0
+Can you repeat that please,1
+Congratulations,2
+Help Me Please,3
+I am fine,4
+I love you,5
+Please come Welcome,6
+Talk slower please,7
+Thank You,8
+What Happened,9
+What are you doing,10
+What do you do,11
+how are you,12
+no,13
+yes,14
