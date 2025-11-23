@@ -21,15 +21,22 @@ STATIC_FOLDER = os.path.join(os.path.dirname(__file__), 'static')
 if not os.path.exists(STATIC_FOLDER):
     os.makedirs(STATIC_FOLDER)
 
-# Load model
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'sign_language_model2.tflite')
+# Load model (check both locations for compatibility)
+MODEL_PATH = os.path.join(os.path.dirname(__file__), 'sign_language_model2.tflite')
+if not os.path.exists(MODEL_PATH):
+    MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'sign_language_model2.tflite')
+
 interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
 interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-# Load labels
-with open(os.path.join(os.path.dirname(__file__), '..', 'label_mapping2.txt'), 'r') as f:
+# Load labels (check both locations)
+LABEL_PATH = os.path.join(os.path.dirname(__file__), 'label_mapping2.txt')
+if not os.path.exists(LABEL_PATH):
+    LABEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'label_mapping2.txt')
+
+with open(LABEL_PATH, 'r') as f:
     LABELS = [line.strip() for line in f.readlines()]
 
 # MediaPipe setup - Matching predictionreal.py exactly
