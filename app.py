@@ -1,7 +1,12 @@
 import os
 import numpy as np
 import cv2
-import mediapipe as mp
+try:
+    import mediapipe as mp
+    MEDIAPIPE_AVAILABLE = True
+except ImportError:
+    MEDIAPIPE_AVAILABLE = False
+    print("⚠️ MediaPipe not available - using fallback mode")
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import tensorflow as tf
@@ -40,15 +45,19 @@ with open(LABEL_PATH, 'r') as f:
     LABELS = [line.strip() for line in f.readlines()]
 
 # MediaPipe setup - Matching predictionreal.py exactly
-mp_hands = mp.solutions.hands
-mp_pose = mp.solutions.pose
-mp_face = mp.solutions.face_mesh
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
+if MEDIAPIPE_AVAILABLE:
+    mp_hands = mp.solutions.hands
+    mp_pose = mp.solutions.pose
+    mp_face = mp.solutions.face_mesh
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
 
-# Initialize separate models to match training data distribution
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5)
-pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
+    # Initialize separate models to match training data distribution
+    hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5)
+    pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
+else:
+    hands = None
+    pose = None
 face = mp_face.FaceMesh(static_image_mode=False, max_num_faces=1, min_detection_confidence=0.5)
 
 def extract_features_and_draw(frame):
